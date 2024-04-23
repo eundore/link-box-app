@@ -1,8 +1,15 @@
+import { Toaster } from "@/components/ui/toaster";
+import { AuthProvider } from "@/context/authProvider";
+import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter as FontSans } from "next/font/google";
 import "./globals.css";
+import ReactQueryProvider from "@/context/reactQueryProvider";
 
-const inter = Inter({ subsets: ["latin"] });
+const fontSans = FontSans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +23,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={cn("font-sans bg-black", fontSans.variable)}>
+        <ReactQueryProvider>
+          <AuthProvider>
+            <main className="w-full max-w-5xl m-auto">{children}</main>
+            <Toaster />
+          </AuthProvider>
+        </ReactQueryProvider>
+      </body>
     </html>
   );
 }

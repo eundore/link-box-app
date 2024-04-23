@@ -1,4 +1,11 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  pagesDir: "./pages",
+  compiler: {
+    removeConsole: {
+      exclude: ["error"],
+    },
+  },
+};
 
 export default nextConfig;
