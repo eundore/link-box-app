@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Header from "../../components/Header/Header";
 import { auth } from "../../../firebase";
+import crypto from "crypto";
 
 const passwordRegex =
   /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$&*?!%])[A-Za-z\d!@$%&*?]{8,15}$/;
@@ -51,11 +52,18 @@ const SignIn = () => {
   const onSubmit = handleSubmit(async (data: z.infer<typeof SignInSchema>) => {
     const { email, password } = data;
 
+    const cryptoKey = process.env.CRYPTO_KEY || "";
+
+    const hashPassword = crypto
+      .createHmac("sha256", cryptoKey)
+      .update(password)
+      .digest("hex");
+
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
-        password
+        hashPassword
       );
       //console.log("userCredential : ", userCredential);
       push("/feed");

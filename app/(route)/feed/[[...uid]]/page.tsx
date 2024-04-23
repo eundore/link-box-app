@@ -14,7 +14,6 @@ const Feed = () => {
   const { isPending, error, data } = useQuery({
     queryKey: ["user", uid],
     queryFn: async () => {
-      alert(typeof uid);
       const q = query(
         collection(db, "user"),
         where("uid", "==", uid.toString())
@@ -49,7 +48,7 @@ const Feed = () => {
     return router.replace("/");
   };
 
-  if (isPending) return null;
+  // if (isPending) return null;
 
   return (
     <>

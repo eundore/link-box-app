@@ -57,21 +57,21 @@ const SignUp = () => {
   const onSubmit = handleSubmit(async (data: z.infer<typeof SignUpSchema>) => {
     const { email, password } = data;
 
+    const cryptoKey = process.env.CRYPTO_KEY || "";
+
+    const hashPassword = crypto
+      .createHmac("sha256", cryptoKey)
+      .update(password)
+      .digest("hex");
+
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
-        password
+        hashPassword
       );
 
       const collectionRef = collection(db, "user");
-
-      const cryptoKey = process.env.CRYPTO_KEY || "";
-
-      const hashPassword = crypto
-        .createHmac("sha256", cryptoKey)
-        .update(password)
-        .digest("hex");
 
       await addDoc(collectionRef, {
         uid: userCredential.user.uid,
