@@ -2,14 +2,23 @@
 import { Button } from "@/components/ui/button";
 import { auth, db } from "@/firebase";
 import { useQuery } from "@tanstack/react-query";
-import { signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { useParams, useRouter } from "next/navigation";
+import { useEffect, useLayoutEffect, useState } from "react";
 
 const Feed = () => {
   const router = useRouter();
   const params = useParams<{ uid: string }>();
   const { uid } = params;
+
+  useLayoutEffect(() => {
+    if (!uid) {
+      onAuthStateChanged(auth, (user) => {
+        router.replace(`/feed/${user?.uid}`);
+      });
+    }
+  }, []);
 
   const { isPending, error, data } = useQuery({
     queryKey: ["user", uid],
@@ -29,26 +38,12 @@ const Feed = () => {
     enabled: !!uid,
   });
 
-  // const [uid, setUid] = useState<string>();
-
-  // useEffect(() => {
-  //   if (params.uid === "") {
-  //     alert("in");
-  //     onAuthStateChanged(auth, (user) => {
-  //       setUid(user?.uid);
-  //     });
-  //   }
-
-  //   alert("out");
-  //   setUid(params.uid);
-  // }, []);
-
   const logOut = async () => {
     await signOut(auth);
     return router.replace("/");
   };
 
-  // if (isPending) return null;
+  if (isPending) return null;
 
   return (
     <>
