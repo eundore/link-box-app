@@ -1,8 +1,10 @@
+import useUserStore from "@/app/store/useUserStore";
 import { Avatar } from "@/components/ui/avatar";
 import { auth, db } from "@/firebase";
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { useQuery } from "@tanstack/react-query";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import { useParams } from "next/navigation";
 
 interface Profile {
   username: string;
@@ -11,27 +13,31 @@ interface Profile {
 }
 
 const Profile = () => {
-  const { uid } = auth.currentUser ?? {};
+  const params = useParams();
+  const { username } = params;
+  const { setUser } = useUserStore();
 
   const {
     isPending,
     error,
     data: userData,
   } = useQuery({
-    queryKey: ["user", uid],
+    queryKey: ["user", username],
     queryFn: async () => {
       const q = query(
         collection(db, "user"),
-        where("uid", "==", uid?.toString())
+        where("username", "==", username[0])
       );
       const querySnapshot = await getDocs(q);
       const posts = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
       }));
 
+      setUser(posts[0]);
+
       return posts;
     },
-    enabled: !!uid,
+    enabled: !!username,
   });
 
   if (isPending) return null;

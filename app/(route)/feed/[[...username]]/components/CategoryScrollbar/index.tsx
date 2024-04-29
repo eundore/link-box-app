@@ -1,4 +1,5 @@
 import useCategoryStore from "@/app/store/useCategoryStore";
+import useUserStore from "@/app/store/useUserStore";
 import { Badge } from "@/components/ui/badge";
 import { db } from "@/firebase";
 import { useQuery } from "@tanstack/react-query";
@@ -16,16 +17,14 @@ interface Category {
 }
 
 const CategoryScrollbar = () => {
-  const auth = getAuth();
+  const { user } = useUserStore();
+  const { uid: feedUid } = user;
   const { currentCategoryId, setCurrentCategoryId } = useCategoryStore();
 
   const { data: categories } = useQuery({
-    queryKey: ["useCategoryQuery", auth.currentUser?.uid],
+    queryKey: ["useCategoryQuery", feedUid],
     queryFn: async () => {
-      const q = query(
-        collection(db, "category"),
-        where("uid", "==", auth.currentUser?.uid)
-      );
+      const q = query(collection(db, "category"), where("uid", "==", feedUid));
       const querySnapshot = await getDocs(q);
       const posts: Array<Category> = querySnapshot.docs.map((doc) => ({
         id: doc.id,
@@ -36,7 +35,7 @@ const CategoryScrollbar = () => {
 
       return posts;
     },
-    enabled: !!auth.currentUser?.uid,
+    enabled: !!feedUid,
   });
 
   return (

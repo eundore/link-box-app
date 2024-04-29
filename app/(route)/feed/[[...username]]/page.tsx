@@ -32,20 +32,27 @@ import {
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
+import useUserStore from "@/app/store/useUserStore";
 
 const Feed = () => {
   const auth = getAuth();
   const router = useRouter();
-  const params = useParams<{ username: string }>();
+  const params = useParams();
   const { username } = params;
   const { currentCategoryId } = useCategoryStore();
+  const { user } = useUserStore();
+  const { uid: feedUid } = user;
 
   const [isOwner, setIsOwner] = useState<boolean>(false);
+
+  console.log("username : ", username ? username[0] : null);
+  console.log("username is not empty : ", username ? !!username.length : false);
+  console.log("currentCategoryId : ", currentCategoryId);
 
   useEffect(() => {
     if (!username) return;
 
-    if (auth.currentUser?.displayName === username.toString()) {
+    if (auth.currentUser?.displayName === username[0]) {
       return setIsOwner(true);
     }
 
@@ -58,6 +65,7 @@ const Feed = () => {
     if (!pageParam) {
       const q = query(
         collection(db, "link"),
+        where("uid", "==", feedUid),
         where("categoryid", "==", currentCategoryId),
         //orderBy("createdAt", "desc"),
         limit(LIMIT_PER_PAGE)
@@ -69,7 +77,7 @@ const Feed = () => {
 
     const q = query(
       collection(db, "link"),
-      //where("uid", "==", auth.currentUser?.uid),
+      where("uid", "==", feedUid),
       where("categoryid", "==", currentCategoryId),
       //orderBy("createdAt", "desc"),
       startAfter(pageParam),
@@ -89,7 +97,7 @@ const Feed = () => {
     isLoading,
     data: links,
   } = useInfiniteQuery({
-    queryKey: ["uselinkQuery", auth.currentUser?.uid, currentCategoryId],
+    queryKey: ["uselinkQuery", feedUid, currentCategoryId],
     queryFn: ({ pageParam }) => fetchPage(pageParam),
     initialPageParam: null,
     getNextPageParam: (querySnapshot: DocumentData) => {
@@ -97,7 +105,7 @@ const Feed = () => {
         ? querySnapshot.docs[querySnapshot.docs.length - 1]
         : undefined;
     },
-    enabled: !!auth.currentUser?.uid && !!currentCategoryId,
+    enabled: !!feedUid && !!currentCategoryId,
     select: (data) => {
       const { pages } = data;
 
@@ -139,8 +147,6 @@ const Feed = () => {
 
   return (
     <>
-      {/* <Button onClick={logOut}>Log out</Button> */}
-
       {/* <Button onClick={handleProfile}>Update</Button>
       {auth.currentUser?.photoURL && (
         <img

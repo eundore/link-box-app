@@ -69,7 +69,14 @@ const LinkCard = ({ link, isOwner }: LinkCardProps) => {
           onChange={updateCation}
         />
       )}
-      {!isOwner && <p className="text-gray-400 mt-1">{caption}</p>}
+      {!isOwner && (
+        <p
+          className="text-gray-400 mt-1 cursor-default"
+          onClick={(e) => e.preventDefault()}
+        >
+          {caption}
+        </p>
+      )}
     </Link>
   );
 };

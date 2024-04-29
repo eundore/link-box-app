@@ -1,3 +1,13 @@
+export interface User {
+  uid?: string;
+  username?: string;
+  email?: string;
+  description?: string;
+  imageUrl?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
 export interface Link {
   id?: string;
   caption?: string;
