@@ -1,5 +1,5 @@
 "use client";
-import { Category } from "@/app/@types/domain";
+import { Category } from "@/app/types/domain";
 import Header from "@/app/components/Header";
 import useCategoryStore from "@/app/store/useCategoryStore";
 import { Badge } from "@/components/ui/badge";

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist, devtools } from "zustand/middleware";
-import { CategoryStore } from "../@types/useCategoryStore";
+import { CategoryStore } from "../types/useCategoryStore";
 
 export default create(
   devtools(

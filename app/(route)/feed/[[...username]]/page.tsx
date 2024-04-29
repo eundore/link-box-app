@@ -4,7 +4,7 @@ import LinkInput from "@/app/(route)/feed/[[...username]]/components/LinkAddInpu
 import LinkCard from "@/app/(route)/feed/[[...username]]/components/LinkCard";
 import Profile from "@/app/(route)/feed/[[...username]]/components/Profile";
 import SettingMenu from "@/app/(route)/feed/[[...username]]/components/SettingMenu";
-import { Link } from "@/app/@types/domain";
+import { Link } from "@/app/types/domain";
 import { ScrapedData } from "@/app/api/scrapper/route";
 import BottomNav from "@/app/components/BottomNav";
 import useCategoryStore from "@/app/store/useCategoryStore";

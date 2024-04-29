@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 
 import LinkCardSettingMenu from "./LinkCardSettingMenu";
-import { Link as LinkDomain } from "@/app/@types/domain";
+import { Link as LinkDomain } from "@/app/types/domain";
 import Link from "next/link";
 
 interface LinkCardProps {
