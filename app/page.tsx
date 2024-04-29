@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/firebase";
-import { FaBox } from "@react-icons/all-files/fa/FaBox";
+import { FaBox } from "react-icons/fa";
 import { onAuthStateChanged } from "firebase/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

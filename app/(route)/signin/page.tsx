@@ -12,12 +12,13 @@ import { useToast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import Header from "../../components/Header/Header";
+
 import { auth } from "../../../firebase";
 import crypto from "crypto";
+import Header from "@/app/components/Header";
 
 const passwordRegex =
   /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$&*?!%])[A-Za-z\d!@$%&*?]{8,15}$/;
@@ -126,7 +127,7 @@ const SignIn = () => {
 
           <Button
             type="submit"
-            className="w-full bg-gray-600"
+            className="w-full bg-neutral-600"
             size="lg"
             onClick={onSubmit}
           >

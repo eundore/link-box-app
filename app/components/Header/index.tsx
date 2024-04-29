@@ -1,11 +1,13 @@
-import { IoIosArrowBack } from "@react-icons/all-files/io/IoIosArrowBack";
+import { IoIosArrowBack } from "react-icons/io";
 import { useRouter } from "next/navigation";
+import { ReactNode } from "react";
 
 interface HeaderProps {
   title: string;
+  button?: ReactNode;
 }
 
-const Header = ({ title }: HeaderProps) => {
+const Header = ({ title, button }: HeaderProps) => {
   const { back } = useRouter();
 
   return (
@@ -16,6 +18,7 @@ const Header = ({ title }: HeaderProps) => {
         onClick={() => back()}
       />
       <h1 className="flex w-full font-bold justify-center">{title}</h1>
+      <div className="absolute right-4">{button}</div>
     </header>
   );
 };

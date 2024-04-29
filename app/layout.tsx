@@ -26,7 +26,7 @@ export default function RootLayout({
       <body className={cn("font-sans bg-black", fontSans.variable)}>
         <ReactQueryProvider>
           <AuthProvider>
-            <main className="w-full max-w-5xl m-auto">{children}</main>
+            <main className="max-w-5xl m-auto relative">{children}</main>
             <Toaster />
           </AuthProvider>
         </ReactQueryProvider>
