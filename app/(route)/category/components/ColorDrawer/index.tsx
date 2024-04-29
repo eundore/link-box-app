@@ -1,4 +1,4 @@
-import { CATEGORY_COLOR_COUNT } from "@/app/constants";
+import { BG_COLORS, CATEGORY_COLOR_COUNT } from "@/app/constants";
 import useCategoryStore from "@/app/store/useCategoryStore";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,7 +29,10 @@ const ColorDrawer = () => {
     <Drawer>
       <DrawerTrigger className=" text-sm font-medium text-white flex items-center">
         <div
-          className={clsx("rounded-full w-6 h-6 cursor-pointer", `bg-${color}`)}
+          className={clsx(
+            "rounded-full w-6 h-6 cursor-pointer",
+            `${BG_COLORS[color as keyof typeof BG_COLORS]}`
+          )}
         />
         <MdArrowDropDown className="text-neutral-600 w-5 h-5" />
       </DrawerTrigger>

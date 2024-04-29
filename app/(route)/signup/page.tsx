@@ -134,7 +134,7 @@ const SignUp = () => {
       await addDoc(categoryCollectionRef, {
         uid: userCredential.user.uid,
         title: "General",
-        color: "#ffffff",
+        color: "category1",
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         //password: hashPassword,

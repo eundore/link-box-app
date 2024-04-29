@@ -10,6 +10,7 @@ import { getAuth } from "firebase/auth";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import Link from "next/link";
 import { FaPlus } from "react-icons/fa6";
+import { TEXT_COLORS } from "@/app/constants";
 
 const Categories = () => {
   const auth = getAuth();
@@ -56,7 +57,7 @@ const Categories = () => {
             <Badge
               className={clsx(
                 "bg-neutral-800 cursor-pointer hover:bg-neutral-700 py-2 px-3",
-                `text-${category.color}`
+                `${TEXT_COLORS[category.color as keyof typeof TEXT_COLORS]}`
               )}
             >
               {category.title}

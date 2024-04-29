@@ -19,10 +19,11 @@ import { useRouter } from "next/navigation";
 import { useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { getAuth } from "firebase/auth";
+import { BG_COLORS, TEXT_COLORS } from "@/app/constants";
 
 const Category = () => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { invalidateQueries } = useQueryClient();
+  const queryClient = useQueryClient();
 
   const { replace } = useRouter();
 
@@ -43,7 +44,7 @@ const Category = () => {
       if (!id) {
         const categoryCollectionRef = collection(db, "category");
         await addDoc(categoryCollectionRef, {
-          ...category,
+          color: category.color,
           title: inputRef.current?.value,
           uid: auth.currentUser?.uid,
           createdAt: serverTimestamp(),
@@ -51,10 +52,12 @@ const Category = () => {
         });
       }
 
-      invalidateQueries({ queryKey: ["useCategoryQuery"] });
+      queryClient.invalidateQueries({ queryKey: ["useCategoryQuery"] });
 
       replace("/feed");
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -75,9 +78,9 @@ const Category = () => {
           <Input
             className={clsx(
               "pl-0 placeholder:text-neutral-600 font-medium bg-transparent border-none focus:border-none focus-visible:ring-offset-0 focus-visible:ring-transparent",
+              `${TEXT_COLORS[color as keyof typeof TEXT_COLORS]}`,
               {
                 "text-white": !color,
-                [`text-${color}`]: !!color,
               }
             )}
             defaultValue={title}
@@ -86,10 +89,13 @@ const Category = () => {
             ref={inputRef}
           ></Input>
           <Separator
-            className={clsx("h-[2px]", {
-              "bg-white": !color,
-              [`bg-${color}`]: !!color,
-            })}
+            className={clsx(
+              "h-[2px]",
+              `${BG_COLORS[color as keyof typeof BG_COLORS]}`,
+              {
+                "bg-white": !color,
+              }
+            )}
           />
         </div>
         <div>

@@ -45,10 +45,6 @@ const Feed = () => {
 
   const [isOwner, setIsOwner] = useState<boolean>(false);
 
-  console.log("username : ", username ? username[0] : null);
-  console.log("username is not empty : ", username ? !!username.length : false);
-  console.log("currentCategoryId : ", currentCategoryId);
-
   useEffect(() => {
     if (!username) return;
 
