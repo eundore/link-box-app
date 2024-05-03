@@ -1,11 +1,13 @@
+import { Timestamp } from "firebase/firestore";
+
 export interface User {
   uid?: string;
   username?: string;
   email?: string;
   description?: string;
   imageUrl?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
 }
 
 export interface Link {
@@ -26,6 +28,19 @@ export interface Category {
   color?: string;
   title?: string;
   uid?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
+}
+
+export interface Comment {
+  id?: string;
+  authorId?: string;
+  categoryId?: string;
+  comment?: string;
+  createdAt?: Timestamp;
+}
+
+export interface UserComment extends Comment {
+  username?: string;
+  imageUrl?: string;
 }

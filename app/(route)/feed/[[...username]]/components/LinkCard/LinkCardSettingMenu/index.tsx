@@ -14,7 +14,7 @@ interface LinkCardSettingMenuProps {
 const LinkCardSettingMenu = ({ deleteLink }: LinkCardSettingMenuProps) => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="absolute top-2 right-2 bg-white bg-opacity-50  rounded-md w-8 h-6  flex justify-center items-center shadow-md">
+      <DropdownMenuTrigger className="absolute top-2 right-2 bg-white bg-opacity-50  rounded-md w-7 h-5  flex justify-center items-center shadow-md">
         <TfiMoreAlt />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

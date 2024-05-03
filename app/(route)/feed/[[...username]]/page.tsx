@@ -4,6 +4,7 @@ import LinkInput from "@/app/(route)/feed/[[...username]]/components/LinkAddInpu
 import LinkCard from "@/app/(route)/feed/[[...username]]/components/LinkCard";
 import Profile from "@/app/(route)/feed/[[...username]]/components/Profile";
 import SettingMenu from "@/app/(route)/feed/[[...username]]/components/SettingMenu";
+import Comment from "@/app/(route)/feed/[[...username]]/components/Comment";
 import { Link } from "@/app/types/domain";
 import { ScrapedData } from "@/app/api/scrapper/route";
 import BottomNav from "@/app/components/BottomNav";
@@ -63,7 +64,7 @@ const Feed = () => {
         collection(db, "link"),
         where("uid", "==", feedUid),
         where("categoryid", "==", currentCategoryId),
-        //orderBy("createdAt", "desc"),
+        orderBy("createdAt", "desc"),
         limit(LIMIT_PER_PAGE)
       );
       const querySnapshot = await getDocs(q);
@@ -75,7 +76,7 @@ const Feed = () => {
       collection(db, "link"),
       where("uid", "==", feedUid),
       where("categoryid", "==", currentCategoryId),
-      //orderBy("createdAt", "desc"),
+      orderBy("createdAt", "desc"),
       startAfter(pageParam),
       limit(LIMIT_PER_PAGE)
     );
@@ -153,9 +154,11 @@ const Feed = () => {
         />
       )} */}
       {isOwner && <SettingMenu />}
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-6">
         <Profile />
         <CategoryScrollbar />
+        <Separator className="bg-neutral-400" />
+        <Comment />
         <Separator className="bg-neutral-400" />
         {isOwner && <LinkInput currentCategoryId={currentCategoryId} />}
         <div className="flex flex-col gap-8 mx-4">

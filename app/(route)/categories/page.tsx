@@ -17,7 +17,7 @@ const Categories = () => {
   const { setCategory } = useCategoryStore();
 
   const { data: categories } = useQuery({
-    queryKey: ["category", auth.currentUser?.uid],
+    queryKey: ["useCategoryQuery", auth.currentUser?.uid],
     queryFn: async () => {
       const q = query(
         collection(db, "category"),

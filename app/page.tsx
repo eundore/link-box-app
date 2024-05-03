@@ -45,7 +45,7 @@ const Home = () => {
         <h1 className="scroll-m-20 mt-4 text-5xl font-extrabold tracking-tight lg:text-5xl">
           Link Box
         </h1>
-        <p className="text-sm [&:not(:first-child)]:mt-3 text-gray-400">
+        <p className="text-sm [&:not(:first-child)]:mt-3 text-neutral-400">
           Catagorize and share your links.
         </p>
       </div>

@@ -20,6 +20,8 @@ import { useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { getAuth } from "firebase/auth";
 import { BG_COLORS, TEXT_COLORS } from "@/app/constants";
+import { Button } from "@/components/ui/button";
+import ConfirmDialog from "./components/ConfirmDialog";
 
 const Category = () => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -115,6 +117,7 @@ const Category = () => {
           </div>
           <Separator className="mt-3" />
         </div>
+        {id && <ConfirmDialog />}
       </div>
     </>
   );

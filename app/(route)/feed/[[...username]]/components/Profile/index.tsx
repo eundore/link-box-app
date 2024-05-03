@@ -43,7 +43,7 @@ const Profile = () => {
   if (isPending) return null;
 
   return (
-    <div className="flex mt-16 gap-8 mx-4">
+    <div className="flex mt-8 gap-8 mx-4">
       <Avatar className="w-20 h-20 bg-white">
         {/* {userData?.[0].imageUrl && (
           <AvatarImage src={userData?.[0].imageUrl} alt="profile-image" />
@@ -51,7 +51,7 @@ const Profile = () => {
       </Avatar>
       <div className="flex flex-col justify-center gap-2">
         <h1 className="text-white font-bold">{userData?.[0].username}</h1>
-        <p className="text-sm text-gray-400">{userData?.[0].desciption}</p>
+        <p className="text-sm text-neutral-400">{userData?.[0].desciption}</p>
       </div>
     </div>
   );
