@@ -3,11 +3,13 @@ import Header from "@/app/components/Header";
 import { Follow as FollowDomain, User, UserFollow } from "@/app/types/domain";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { db } from "@/firebase";
+import { db, storage } from "@/firebase";
 import { useQuery } from "@tanstack/react-query";
 import { getAuth } from "firebase/auth";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import { ref, getDownloadURL } from "firebase/storage";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const Follow = () => {
   const auth = getAuth();
@@ -35,11 +37,14 @@ const Follow = () => {
 
         const { username, imageUrl } = user;
 
+        const storageRef = ref(storage, imageUrl);
+        const url = await getDownloadURL(storageRef);
+
         posts.push({
           id: doc.id,
-          username,
-          imageUrl,
           ...followData,
+          username,
+          imageUrl: url,
         });
       }
 
@@ -70,11 +75,14 @@ const Follow = () => {
 
         const { username, imageUrl } = user;
 
+        const storageRef = ref(storage, imageUrl);
+        const url = await getDownloadURL(storageRef);
+
         posts.push({
           id: doc.id,
-          username,
-          imageUrl,
           ...followData,
+          username,
+          imageUrl: url,
         });
       }
 
@@ -82,6 +90,10 @@ const Follow = () => {
     },
     enabled: !!auth.currentUser?.uid,
   });
+
+  useEffect(() => {
+    console.log(auth.currentUser);
+  }, [auth]);
 
   return (
     <>
@@ -106,7 +118,9 @@ const Follow = () => {
                   className="w-12 h-12 cursor-pointer"
                   onClick={() => push(`/feed/${username}`)}
                 >
-                  <AvatarImage src={imageUrl} alt="profile-image" />
+                  {imageUrl && (
+                    <AvatarImage src={imageUrl} alt="profile-image" />
+                  )}
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
                 <p className="text-white text-[10px] font-medium">{username}</p>
@@ -123,7 +137,9 @@ const Follow = () => {
                   className="w-12 h-12 cursor-pointer"
                   onClick={() => push(`/feed/${username}`)}
                 >
-                  <AvatarImage src={imageUrl} alt="profile-image" />
+                  {imageUrl && (
+                    <AvatarImage src={imageUrl} alt="profile-image" />
+                  )}
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
                 <p className="text-white text-[10px] font-medium">{username}</p>

@@ -30,7 +30,7 @@ const LinkCard = ({ link, isOwner }: LinkCardProps) => {
 
   const updateCation = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const linkRef = doc(db, "link", `${id}`);
-    await updateDoc(linkRef, { ...link, caption: event.currentTarget.value });
+    await updateDoc(linkRef, { caption: event.currentTarget.value });
 
     queryClient.invalidateQueries({ queryKey: ["uselinkQuery"] });
   };

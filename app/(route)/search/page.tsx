@@ -3,9 +3,10 @@ import BottomNav from "@/app/components/BottomNav";
 import { User } from "@/app/types/domain";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
-import { db } from "@/firebase";
+import { db, storage } from "@/firebase";
 import { useQuery } from "@tanstack/react-query";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import { getDownloadURL, ref } from "firebase/storage";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -26,9 +27,18 @@ const Search = () => {
         where("username", "<=", targetUsername + "\uf8ff")
       );
       const querySnapshot = await getDocs(q);
-      const posts: Array<User> = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-      }));
+      const posts: Array<User> = [];
+
+      for (const doc of querySnapshot.docs) {
+        const { imageUrl } = doc.data();
+        const storageRef = ref(storage, imageUrl);
+        const url = await getDownloadURL(storageRef);
+
+        posts.push({
+          ...doc.data(),
+          imageUrl: url,
+        });
+      }
 
       return posts;
     },

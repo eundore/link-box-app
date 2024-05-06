@@ -15,7 +15,7 @@ import {
   serverTimestamp,
   where,
 } from "firebase/firestore";
-import { db } from "@/firebase";
+import { db, storage } from "@/firebase";
 import { getAuth } from "firebase/auth";
 import { comment } from "postcss";
 import useCategoryStore from "@/app/store/useCategoryStore";
@@ -29,11 +29,14 @@ import { format } from "date-fns";
 import { MdFileUpload } from "react-icons/md";
 import { Button } from "@/components/ui/button";
 import clsx from "clsx";
+import useImageDownloadUrl from "@/app/hooks/useImageDownloadUrl";
+import { getDownloadURL, ref } from "firebase/storage";
 
 const Comment = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const auth = getAuth();
   const { currentCategoryId } = useCategoryStore();
+  const downloadUrl = useImageDownloadUrl();
 
   const [isTextareaEmpty, setIsTextareaEmpty] = useState(true);
 
@@ -61,10 +64,13 @@ const Comment = () => {
 
         const { username, imageUrl } = user;
 
+        const storageRef = ref(storage, imageUrl);
+        const url = await getDownloadURL(storageRef);
+
         posts.push({
           id: doc.id,
           username,
-          imageUrl,
+          imageUrl: url,
           ...commentData,
         });
       }
@@ -154,10 +160,7 @@ const Comment = () => {
 
       <div className="flex mx-4 gap-2">
         <Avatar>
-          <AvatarImage
-            src="https://github.com/shadcn.png"
-            alt="profile-image"
-          />
+          {downloadUrl && <AvatarImage src={downloadUrl} alt="profile-image" />}
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
         <div className="w-full flex py-2">
