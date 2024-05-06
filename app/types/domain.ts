@@ -44,3 +44,14 @@ export interface UserComment extends Comment {
   username?: string;
   imageUrl?: string;
 }
+
+export interface Follow {
+  id?: string;
+  follower?: string;
+  following?: string;
+}
+
+export interface UserFollow extends Follow {
+  username?: string;
+  imageUrl?: string;
+}

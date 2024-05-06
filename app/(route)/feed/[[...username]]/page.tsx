@@ -1,18 +1,17 @@
 "use client";
-import CategoryScrollbar from "@/app/(route)/feed/[[...username]]/components/CategoryScrollbar";
-import LinkInput from "@/app/(route)/feed/[[...username]]/components/LinkAddInput";
-import LinkCard from "@/app/(route)/feed/[[...username]]/components/LinkCard";
-import Profile from "@/app/(route)/feed/[[...username]]/components/Profile";
-import SettingMenu from "@/app/(route)/feed/[[...username]]/components/SettingMenu";
-import Comment from "@/app/(route)/feed/[[...username]]/components/Comment";
-import { Link } from "@/app/types/domain";
+
+import { Follow, Link } from "@/app/types/domain";
 import { ScrapedData } from "@/app/api/scrapper/route";
 import BottomNav from "@/app/components/BottomNav";
 import useCategoryStore from "@/app/store/useCategoryStore";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { db } from "@/firebase";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   getAuth,
   onAuthStateChanged,
@@ -22,7 +21,10 @@ import {
 import {
   DocumentData,
   QueryDocumentSnapshot,
+  addDoc,
   collection,
+  deleteDoc,
+  doc,
   getDocs,
   limit,
   orderBy,
@@ -34,8 +36,17 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import useUserStore from "@/app/store/useUserStore";
+import SettingMenu from "./components/SettingMenu";
+import Profile from "./components/Profile";
+import CategoryScrollbar from "./components/CategoryScrollbar";
+import Comment from "./components/Comment";
+import LinkInput from "./components/LinkAddInput";
+import LinkCard from "./components/LinkCard";
+import Header from "@/app/components/Header";
+import FollowScrollbar from "./components/FollowScrollbar";
 
 const Feed = () => {
+  const queryClient = useQueryClient();
   const auth = getAuth();
   const router = useRouter();
   const params = useParams();
@@ -91,6 +102,7 @@ const Feed = () => {
     hasNextPage,
     isFetchingNextPage,
     isFetchingPreviousPage,
+    isPending,
     isLoading,
     data: links,
   } = useInfiniteQuery({
@@ -123,6 +135,25 @@ const Feed = () => {
     },
   });
 
+  const { isFetched, data: followId } = useQuery({
+    queryKey: ["useFollowCheckingQuery", [auth.currentUser?.uid, feedUid]],
+    queryFn: async () => {
+      const q = query(
+        collection(db, "follow"),
+        where("follower", "==", auth.currentUser?.uid),
+        where("following", "==", feedUid)
+      );
+      const querySnapshot = await getDocs(q);
+      const posts: Array<Follow> = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      return posts[0].id;
+    },
+    enabled: !isOwner && !!auth.currentUser?.uid && !!feedUid,
+  });
+
   useBottomScrollListener(() => {
     if (isLoading) return;
 
@@ -140,7 +171,30 @@ const Feed = () => {
     }
   }, [username]);
 
-  // if (isPending) return null;
+  const followThisUser = async () => {
+    try {
+      if (followId) {
+        const followCollectionRef = doc(db, "follow", `${followId}`);
+        await deleteDoc(followCollectionRef);
+      }
+
+      if (!followId) {
+        const followCollectionRef = collection(db, "follow");
+
+        await addDoc(followCollectionRef, {
+          follower: auth.currentUser?.uid,
+          following: feedUid,
+        });
+      }
+
+      queryClient.invalidateQueries({ queryKey: ["useFollowingQuery"] });
+      queryClient.invalidateQueries({ queryKey: ["useFollowCheckingQuery"] });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  if (isPending) return null;
 
   return (
     <>
@@ -153,7 +207,21 @@ const Feed = () => {
           height={100}
         />
       )} */}
+      {!isOwner && isFetched && (
+        <Header
+          title={""}
+          button={
+            <Button
+              className=" bg-blue-500 hover:bg-blue-500"
+              onClick={followThisUser}
+            >
+              {followId ? "Unfollow" : "Follow"}
+            </Button>
+          }
+        />
+      )}
       {isOwner && <SettingMenu />}
+      {isOwner && <FollowScrollbar />}
       <div className="flex flex-col gap-6">
         <Profile />
         <CategoryScrollbar />
@@ -171,7 +239,7 @@ const Feed = () => {
           ))}
         </div>
       </div>
-      <BottomNav />
+      {isOwner && <BottomNav />}
     </>
   );
 };

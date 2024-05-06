@@ -9,6 +9,7 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  limit,
   orderBy,
   query,
   serverTimestamp,
@@ -42,6 +43,7 @@ const Comment = () => {
       const q = query(
         collection(db, "comment"),
         where("categoryId", "==", currentCategoryId),
+        limit(1),
         orderBy("createdAt", "desc")
       );
       const querySnapshot = await getDocs(q);

@@ -51,7 +51,7 @@ const Profile = () => {
       </Avatar>
       <div className="flex flex-col justify-center gap-2">
         <h1 className="text-white font-bold">{userData?.[0].username}</h1>
-        <p className="text-sm text-neutral-400">{userData?.[0].desciption}</p>
+        <p className="text-sm text-neutral-400">{userData?.[0].description}</p>
       </div>
     </div>
   );
