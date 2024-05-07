@@ -63,7 +63,7 @@ const LinkAddInput = ({ currentCategoryId }: LinkAddInputProps) => {
       //password: hashPassword,
     });
 
-    queryClient.invalidateQueries({ queryKey: ["uselinkQuery"] });
+    await queryClient.invalidateQueries({ queryKey: ["uselinkQuery"] });
 
     if (linkRef.current) {
       linkRef.current.value = "";

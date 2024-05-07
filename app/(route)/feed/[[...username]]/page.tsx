@@ -1,9 +1,10 @@
 "use client";
 
-import { Follow, Link } from "@/app/types/domain";
-import { ScrapedData } from "@/app/api/scrapper/route";
 import BottomNav from "@/app/components/BottomNav";
+import Header from "@/app/components/Header";
 import useCategoryStore from "@/app/store/useCategoryStore";
+import useUserStore from "@/app/store/useUserStore";
+import { Follow, Link } from "@/app/types/domain";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { db } from "@/firebase";
@@ -12,12 +13,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut,
-  updateProfile,
-} from "firebase/auth";
+import { getAuth, signOut } from "firebase/auth";
 import {
   DocumentData,
   QueryDocumentSnapshot,
@@ -33,17 +29,15 @@ import {
   where,
 } from "firebase/firestore";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
-import useUserStore from "@/app/store/useUserStore";
-import SettingMenu from "./components/SettingMenu";
-import Profile from "./components/Profile";
 import CategoryScrollbar from "./components/CategoryScrollbar";
 import Comment from "./components/Comment";
+import FollowScrollbar from "./components/FollowScrollbar";
 import LinkInput from "./components/LinkAddInput";
 import LinkCard from "./components/LinkCard";
-import Header from "@/app/components/Header";
-import FollowScrollbar from "./components/FollowScrollbar";
+import Profile from "./components/Profile";
+import SettingMenu from "./components/SettingMenu";
 
 const Feed = () => {
   const queryClient = useQueryClient();
@@ -136,7 +130,7 @@ const Feed = () => {
   });
 
   const { isFetched, data: followId } = useQuery({
-    queryKey: ["useFollowCheckingQuery", [auth.currentUser?.uid, feedUid]],
+    queryKey: ["useFollowCheckingQuery", auth.currentUser?.uid, feedUid],
     queryFn: async () => {
       const q = query(
         collection(db, "follow"),
@@ -149,7 +143,9 @@ const Feed = () => {
         ...doc.data(),
       }));
 
-      return posts[0].id;
+      const followId = posts.length > 0 ? posts[0].id : null;
+
+      return followId;
     },
     enabled: !isOwner && !!auth.currentUser?.uid && !!feedUid,
   });
@@ -176,9 +172,7 @@ const Feed = () => {
       if (followId) {
         const followCollectionRef = doc(db, "follow", `${followId}`);
         await deleteDoc(followCollectionRef);
-      }
-
-      if (!followId) {
+      } else {
         const followCollectionRef = collection(db, "follow");
 
         await addDoc(followCollectionRef, {
@@ -187,14 +181,17 @@ const Feed = () => {
         });
       }
 
-      queryClient.invalidateQueries({ queryKey: ["useFollowingQuery"] });
-      queryClient.invalidateQueries({ queryKey: ["useFollowCheckingQuery"] });
+      await queryClient.invalidateQueries({
+        queryKey: ["useFollowCheckingQuery"],
+      });
+      await queryClient.invalidateQueries({ queryKey: ["useFollowingQuery"] });
+      await queryClient.invalidateQueries({ queryKey: ["useFollowerQuery"] });
     } catch (error) {
       console.log(error);
     }
   };
 
-  if (isPending) return null;
+  // if (isPending) return null;
 
   return (
     <>
@@ -207,7 +204,7 @@ const Feed = () => {
           height={100}
         />
       )} */}
-      {!isOwner && isFetched && (
+      {!isOwner && (
         <Header
           title={""}
           button={
@@ -215,7 +212,7 @@ const Feed = () => {
               className=" bg-blue-500 hover:bg-blue-500"
               onClick={followThisUser}
             >
-              {followId ? "Unfollow" : "Follow"}
+              {!!followId ? "Unfollow" : "Follow"}
             </Button>
           }
         />

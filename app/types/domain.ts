@@ -29,6 +29,7 @@ export interface Category {
   color?: string;
   title?: string;
   uid?: string;
+  privacy?: string;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }

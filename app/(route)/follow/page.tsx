@@ -3,6 +3,7 @@ import Header from "@/app/components/Header";
 import { Follow as FollowDomain, User, UserFollow } from "@/app/types/domain";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuth } from "@/context/authProvider";
 import { db, storage } from "@/firebase";
 import { useQuery } from "@tanstack/react-query";
 import { getAuth } from "firebase/auth";
@@ -12,15 +13,15 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const Follow = () => {
-  const auth = getAuth();
+  const { user } = useAuth();
   const { push } = useRouter();
 
   const { data: following } = useQuery({
-    queryKey: ["useFollowingQuery", auth.currentUser?.uid],
+    queryKey: ["useFollowingQuery", user?.uid],
     queryFn: async () => {
       const q = query(
         collection(db, "follow"),
-        where("follower", "==", auth.currentUser?.uid)
+        where("follower", "==", user?.uid)
       );
       const querySnapshot = await getDocs(q);
 
@@ -50,15 +51,15 @@ const Follow = () => {
 
       return posts;
     },
-    enabled: !!auth.currentUser?.uid,
+    enabled: !!user?.uid,
   });
 
   const { data: follower } = useQuery({
-    queryKey: ["useFollowerQuery", auth.currentUser?.uid],
+    queryKey: ["useFollowerQuery", user?.uid],
     queryFn: async () => {
       const q = query(
         collection(db, "follow"),
-        where("following", "==", auth.currentUser?.uid)
+        where("following", "==", user?.uid)
       );
       const querySnapshot = await getDocs(q);
 
@@ -88,12 +89,8 @@ const Follow = () => {
 
       return posts;
     },
-    enabled: !!auth.currentUser?.uid,
+    enabled: !!user?.uid,
   });
-
-  useEffect(() => {
-    console.log(auth.currentUser);
-  }, [auth]);
 
   return (
     <>

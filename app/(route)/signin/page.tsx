@@ -61,12 +61,8 @@ const SignIn = () => {
       .digest("hex");
 
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        hashPassword
-      );
-      //console.log("userCredential : ", userCredential);
+      await signInWithEmailAndPassword(auth, email, hashPassword);
+
       push("/feed");
     } catch (error) {
       console.error(error);

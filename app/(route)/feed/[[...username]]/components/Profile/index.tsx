@@ -20,7 +20,6 @@ const Profile = () => {
   const params = useParams();
   const { username } = params;
   const { setUser } = useUserStore();
-  const downloadUrl = useImageDownloadUrl();
 
   const {
     isPending,
@@ -39,9 +38,20 @@ const Profile = () => {
         ...doc.data(),
       }));
 
-      setUser(posts[0]);
+      const { imageUrl } = posts[0];
 
-      return posts;
+      const storageRef = ref(storage, imageUrl);
+      const url = await getDownloadURL(storageRef);
+
+      setUser({
+        ...posts[0],
+        imageUrl: url,
+      });
+
+      return {
+        ...posts[0],
+        imageUrl: url,
+      };
     },
     enabled: !!username,
   });
@@ -51,11 +61,13 @@ const Profile = () => {
   return (
     <div className="flex mt-8 gap-8 mx-4">
       <Avatar className="w-20 h-20 bg-white">
-        {downloadUrl && <AvatarImage src={downloadUrl} alt="profile-image" />}
+        {userData?.imageUrl && (
+          <AvatarImage src={userData?.imageUrl} alt="profile-image" />
+        )}
       </Avatar>
       <div className="flex flex-col justify-center gap-2">
-        <h1 className="text-white font-bold">{userData?.[0].username}</h1>
-        <p className="text-sm text-neutral-400">{userData?.[0].description}</p>
+        <h1 className="text-white font-bold">{userData?.username}</h1>
+        <p className="text-sm text-neutral-400">{userData?.description}</p>
       </div>
     </div>
   );

@@ -12,10 +12,12 @@ import {
 } from "@/components/ui/dialog";
 import { db } from "@/firebase";
 import { useQueryClient } from "@tanstack/react-query";
+import { getAuth } from "firebase/auth";
 import { deleteDoc, doc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 
 const ConfirmDialog = () => {
+  const auth = getAuth();
   const { back } = useRouter();
   const { category } = useCategoryStore();
   const { id } = category;
@@ -30,7 +32,7 @@ const ConfirmDialog = () => {
     const categoryRef = doc(db, "category", `${id}`);
     await deleteDoc(categoryRef);
 
-    queryClient.invalidateQueries({ queryKey: ["useCategoryQuery"] });
+    await queryClient.invalidateQueries({ queryKey: ["category"] });
 
     back();
   };

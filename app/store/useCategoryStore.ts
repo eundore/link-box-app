@@ -16,6 +16,12 @@ export default create(
             category: { ...state.category, color },
           }));
         },
+        setCategoryPrivacy(privacy) {
+          set((state) => ({
+            ...state,
+            category: { ...state.category, privacy },
+          }));
+        },
         currentCategoryId: "",
         setCurrentCategoryId(currentCategoryId) {
           set((state) => ({

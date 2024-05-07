@@ -21,10 +21,6 @@ const Home = () => {
     },
   } as const;
 
-  // useEffect(() => {
-  //   console.log(Object.entries(SIGN_IN_FORM));
-  // }, []);
-
   const { replace } = useRouter();
   const [lodaing, setLoading] = useState(true);
 

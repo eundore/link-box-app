@@ -36,7 +36,7 @@ const ColorDrawer = () => {
         />
         <MdArrowDropDown className="text-neutral-600 w-5 h-5" />
       </DrawerTrigger>
-      <DrawerContent className="  bg-neutral-800 border-none">
+      <DrawerContent className="  bg-neutral-900 border-none">
         <div className="mx-auto w-full max-w-sm flex flex-col items-center">
           <DrawerHeader>
             <DrawerTitle className="text-center text-white">Color</DrawerTitle>

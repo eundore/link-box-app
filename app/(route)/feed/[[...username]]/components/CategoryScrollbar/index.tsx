@@ -15,7 +15,7 @@ const CategoryScrollbar = () => {
   const { currentCategoryId, setCurrentCategoryId } = useCategoryStore();
 
   const { data: categories } = useQuery({
-    queryKey: ["useCategoryQuery", feedUid],
+    queryKey: ["category", feedUid],
     queryFn: async () => {
       const q = query(collection(db, "category"), where("uid", "==", feedUid));
       const querySnapshot = await getDocs(q);
@@ -40,7 +40,7 @@ const CategoryScrollbar = () => {
         <Badge
           key={`category-${index}`}
           className={clsx(
-            "bg-neutral-800 cursor-pointer hover:bg-neutral-700 py-2 px-3",
+            "bg-neutral-800 cursor-pointer hover:bg-neutral-700 py-2 px-3 min-w-14 justify-center",
             `${TEXT_COLORS[color as keyof typeof TEXT_COLORS]}`,
             {
               "border border-neutral-400": currentCategoryId === id,

@@ -82,11 +82,6 @@ const SignUp = () => {
   const { isValid } = formState;
   const watchedUsername = watch("username");
 
-  // const handleFieldChange = (fieldValue: string) => {
-  //   console.log("Username field value changed:", fieldValue);
-
-  // };
-
   const onSubmit = handleSubmit(async (data: z.infer<typeof SignUpSchema>) => {
     const { email, password, username } = data;
 
@@ -109,11 +104,7 @@ const SignUp = () => {
       if (currentUser) {
         await updateProfile(currentUser, {
           displayName: username,
-        })
-          .then(() => {
-            console.log("Profile updated!");
-          })!
-          .catch((error) => {});
+        });
       }
 
       const userCollectionRef = collection(db, "user");
@@ -126,7 +117,6 @@ const SignUp = () => {
         description: null,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
-        //password: hashPassword,
       });
 
       const categoryCollectionRef = collection(db, "category");
@@ -137,10 +127,8 @@ const SignUp = () => {
         color: "category1",
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
-        //password: hashPassword,
       });
 
-      //console.log("userCredential : ", userCredential);
       replace("/");
       toast({
         title: "Congratulations!🎉",

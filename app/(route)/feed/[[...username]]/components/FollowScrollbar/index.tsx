@@ -1,8 +1,9 @@
 import { Follow, User, UserFollow } from "@/app/types/domain";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { auth, db } from "@/firebase";
+import { auth, db, storage } from "@/firebase";
 import { useQuery } from "@tanstack/react-query";
 import { collection, getDocs, limit, query, where } from "firebase/firestore";
+import { getDownloadURL, ref } from "firebase/storage";
 import { useRouter } from "next/navigation";
 import { IoIosArrowForward } from "react-icons/io";
 import { MdKeyboardArrowRight } from "react-icons/md";
@@ -37,10 +38,13 @@ const FollowScrollbar = () => {
 
         const { username, imageUrl } = user;
 
+        const storageRef = ref(storage, imageUrl);
+        const url = await getDownloadURL(storageRef);
+
         posts.push({
           id: doc.id,
           username,
-          imageUrl,
+          imageUrl: url,
           ...Following,
         });
       }

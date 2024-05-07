@@ -31,12 +31,14 @@ import { Button } from "@/components/ui/button";
 import clsx from "clsx";
 import useImageDownloadUrl from "@/app/hooks/useImageDownloadUrl";
 import { getDownloadURL, ref } from "firebase/storage";
+import { useRouter } from "next/navigation";
 
 const Comment = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const auth = getAuth();
   const { currentCategoryId } = useCategoryStore();
   const downloadUrl = useImageDownloadUrl();
+  const { push } = useRouter();
 
   const [isTextareaEmpty, setIsTextareaEmpty] = useState(true);
 
@@ -115,7 +117,6 @@ const Comment = () => {
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key == "Enter") {
       if (!event.shiftKey) {
-        console.log("hey??");
         return writeComment();
       }
     }
@@ -136,14 +137,22 @@ const Comment = () => {
       {comments?.map(
         ({ comment, imageUrl, username, createdAt, id }, index) => (
           <div className="flex gap-2 mx-4 " key={`comment-${index}`}>
-            <Avatar>
+            <Avatar
+              onClick={() => push(`/feed/${username}`)}
+              className="cursor-pointer"
+            >
               <AvatarImage src={imageUrl} alt="profile-image" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div className="w-full">
               <div className="flex">
                 <div className="w-full flex items-baseline gap-2 ">
-                  <p className="text-white text-sm font-medium">{username}</p>
+                  <p
+                    className="text-white text-sm font-medium cursor-pointer"
+                    onClick={() => push(`/feed/${username}`)}
+                  >
+                    {username}
+                  </p>
                   <p className="text-xs text-neutral-400">
                     {createdAt && format(createdAt?.toDate(), "yy.MM.dd hh:mm")}
                   </p>

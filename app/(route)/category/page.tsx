@@ -16,22 +16,25 @@ import {
 } from "firebase/firestore";
 import { db } from "@/firebase";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { getAuth } from "firebase/auth";
 import { BG_COLORS, TEXT_COLORS } from "@/app/constants";
 import { Button } from "@/components/ui/button";
 import ConfirmDialog from "./components/ConfirmDialog";
+import PrivacyDrawer from "./components/PrivacyDrawer";
+import { useAuth } from "@/context/authProvider";
 
 const Category = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
 
-  const { replace } = useRouter();
+  const { back } = useRouter();
 
   const { category } = useCategoryStore();
   const { title, color, id } = category;
   const auth = getAuth();
+  const { user } = useAuth();
 
   const updateCategory = async () => {
     try {
@@ -47,6 +50,7 @@ const Category = () => {
         const categoryCollectionRef = collection(db, "category");
         await addDoc(categoryCollectionRef, {
           color: category.color,
+          privacy: category.privacy,
           title: inputRef.current?.value,
           uid: auth.currentUser?.uid,
           createdAt: serverTimestamp(),
@@ -54,13 +58,17 @@ const Category = () => {
         });
       }
 
-      queryClient.invalidateQueries({ queryKey: ["useCategoryQuery"] });
+      await queryClient.invalidateQueries({ queryKey: ["category"] });
 
-      replace("/feed");
+      back();
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    console.log(category);
+  }, [category]);
 
   return (
     <>
@@ -103,10 +111,7 @@ const Category = () => {
         <div>
           <div className="flex justify-between">
             <p className="text-white text-sm">Privacy</p>
-            <div className=" text-sm font-medium text-white flex items-center">
-              🔒 Private
-              <MdArrowDropDown className="text-neutral-600 w-5 h-5" />
-            </div>
+            <PrivacyDrawer />
           </div>
           <Separator className="mt-3" />
         </div>

@@ -25,14 +25,14 @@ const LinkCard = ({ link, isOwner }: LinkCardProps) => {
     const linkRef = doc(db, "link", `${id}`);
     await deleteDoc(linkRef);
 
-    queryClient.invalidateQueries({ queryKey: ["uselinkQuery"] });
+    await queryClient.invalidateQueries({ queryKey: ["uselinkQuery"] });
   };
 
   const updateCation = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const linkRef = doc(db, "link", `${id}`);
     await updateDoc(linkRef, { caption: event.currentTarget.value });
 
-    queryClient.invalidateQueries({ queryKey: ["uselinkQuery"] });
+    await queryClient.invalidateQueries({ queryKey: ["uselinkQuery"] });
   };
 
   return (
