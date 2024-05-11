@@ -48,7 +48,7 @@ const Categories = () => {
       <Header
         title="Categories"
         button={
-          <Link href={"/category"}>
+          <Link href={"/categories/category"}>
             <FaPlus
               className="text-white cursor-pointer px-4 py-2 w-12 h-12"
               onClick={() =>
@@ -62,7 +62,7 @@ const Categories = () => {
         {categories?.map((category, index) => (
           <Link
             key={`category-${index}`}
-            href={"/category"}
+            href={"/categories/category"}
             onClick={() => setCategory(category)}
           >
             <Badge

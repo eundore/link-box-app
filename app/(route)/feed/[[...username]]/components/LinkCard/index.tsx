@@ -6,6 +6,7 @@ import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import LinkCardSettingMenu from "./LinkCardSettingMenu";
 import { Link as LinkDomain } from "@/app/types/domain";
 import Link from "next/link";
+import Image from "next/image";
 
 interface LinkCardProps {
   link?: LinkDomain;

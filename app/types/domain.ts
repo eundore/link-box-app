@@ -57,3 +57,23 @@ export interface UserFollow extends Follow {
   username?: string;
   imageUrl?: string;
 }
+
+export interface ChatRoom {
+  id?: string;
+  uid?: string;
+  partnerUid?: string;
+}
+
+export interface UserChatRoom extends ChatRoom {
+  username?: string;
+  imageUrl?: string;
+}
+
+export interface Message {
+  id?: string;
+  chatRoomId?: string;
+  authorId?: string;
+  content?: string;
+  createdAt?: Timestamp;
+  isRead?: boolean;
+}

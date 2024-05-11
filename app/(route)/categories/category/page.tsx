@@ -66,10 +66,6 @@ const Category = () => {
     }
   };
 
-  useEffect(() => {
-    console.log(category);
-  }, [category]);
-
   return (
     <>
       <Header

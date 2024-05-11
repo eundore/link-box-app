@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FaHome, FaSearch } from "react-icons/fa";
-import { IoPerson } from "react-icons/io5";
+import { IoChatbubbleEllipsesSharp, IoPerson } from "react-icons/io5";
 import { MdMessage } from "react-icons/md";
 
 const BottomNavMenu = [
@@ -13,8 +13,8 @@ const BottomNavMenu = [
     icon: <FaSearch fontSize={20} className="text-white" />,
   },
   {
-    title: "Message",
-    icon: <MdMessage fontSize={20} className="text-white" />,
+    title: "Chat",
+    icon: <IoChatbubbleEllipsesSharp fontSize={20} className="text-white" />,
   },
   {
     title: "My",
